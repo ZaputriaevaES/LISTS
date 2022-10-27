@@ -11,11 +11,38 @@ void list_ctor(struct lists * list)
     list->is_sort = 1;
     list->capacity = MAX_LIST_SIZE;
 
-    list->node = (struct list_elem * ) calloc(list->capacity, 3 * sizeof(elem_t));
+    list->node = (struct list_elem * ) calloc(list->capacity, 3 * (sizeof(elem_t) + 1));
     //list->list_elem->data = (elem_t *) calloc(list->capacity, sizeof(elem_t));
 
+    list_completion(list);
+/*
     list->node[0].data = 0;
-    list->node[0].next = 0; 
+    list->node[0].next = 0;
+    list->node[0].prev = 0;
+
+    
+    list->head = 0;
+    list->tail = 0; 
+    list->free = 1; 
+    list->size = 0;  
+
+    for(int i = list->free; i < list->capacity; i++)
+    {
+    list->node[i].data = 0;
+    list->node[i].next = i + 1; 
+    list->node[i].prev = -1;  
+    }  
+
+    list->node[list->capacity].data = 0;
+    list->node[list->capacity].next = 0; 
+    list->node[list->capacity].prev = -1;
+*/     
+}
+
+void list_completion(struct lists * list)
+{
+    list->node[0].data = 0;
+    list->node[0].next = 0;
     list->node[0].prev = 0;
 
     list->node[1].data = 555;
@@ -37,18 +64,17 @@ void list_ctor(struct lists * list)
     list->node[5].data = 444;
     list->node[5].next = 1; 
     list->node[5].prev = 4;
+    
+    for(int i = 6; i < list->capacity; i++)
+    {
+    list->node[i].data = 0;
+    list->node[i].next = i + 1; 
+    list->node[i].prev = -1;  
+    }  
 
-    list->node[6].data = 0;
-    list->node[6].next = 7; 
-    list->node[6].prev = -1;
-
-    list->node[7].data = 0;
-    list->node[7].next = 8; 
-    list->node[7].prev = -1;
-
-    list->node[8].data = 0;
-    list->node[8].next = 9; 
-    list->node[8].prev = -1;    
+    list->node[list->capacity].data = 0;
+    list->node[list->capacity].next = 0; 
+    list->node[list->capacity].prev = -1;         
 
     list->head = 3;
     list->tail = 1; 
@@ -276,17 +302,31 @@ int delete_nth(struct lists * list, int index, int * value)
 int sort(struct lists * list)
 {
     assert(list != NULL);
-    
-    int capacity = list->capacity;
 
-    struct list_elem * new_data = (struct list_elem * ) calloc(list->capacity, 3 * sizeof(elem_t));
+    struct list_elem * new_data = (struct list_elem * ) calloc(list->capacity, 3 * (sizeof(elem_t) + 1));
 
-    for(int i = 1; i <= capacity; i++)
+    int elm = list->head;
+
+    for(int i = 1; i <= list->size; i++)
     {
-        (new_data + i)->data = list->node[i].data;
-        (new_data + i)->next = list->node[i].next;
-        (new_data + i)->prev = list->node[i].prev;
+        (new_data + i)->data = list->node[elm].data;
+        (new_data + i)->next = list->node[elm].next;
+        (new_data + i)->prev = list->node[elm].prev;
+        elm = list->node[elm].next;
     }
+
+    elm = list->free;
+
+    for(int i = list->size + 1; i <= list->capacity; i++) 
+    {
+        (new_data + i)->data = list->node[elm].data;
+        (new_data + i)->next = list->node[elm].next;
+        (new_data + i)->prev = list->node[elm].prev;
+        elm = list->node[elm].next;
+    }    
+
+    list->head = 1;
+    list->tail = list->size;
 
     struct list_elem * old_data = list->node;
 
@@ -300,25 +340,25 @@ int sort(struct lists * list)
 void list_dump(struct lists * list)
 {
     printf("\nN:    ");
-    for(int it = 0; it < list->capacity; it++) 
+    for(int it = 0; it <= list->capacity; it++) 
     {
         printf("%3d ", it);
     }    
     
     printf("\nDATA: ");
-    for(int it = 0; it < list->capacity; it++) 
+    for(int it = 0; it <= list->capacity; it++) 
     {
         printf("%3d ", list->node[it].data);
     }
 
     printf("\nNEXT: ");
-    for(int it = 0; it < list->capacity; it++) 
+    for(int it = 0; it <= list->capacity; it++) 
     {
         printf("%3d ", list->node[it].next);
     }
 
     printf("\nPREV: ");
-    for(int it = 0; it < list->capacity; it++) 
+    for(int it = 0; it <= list->capacity; it++) 
     {
         printf("%3d ", list->node[it].prev);
     }  

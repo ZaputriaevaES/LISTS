@@ -51,6 +51,16 @@ int main(void)
 
     //list_dump(&list);
 
+    //sort(&list);
+
+    push_front(&list, 666);
+
+    list_dump(&list);
+
+    push_front(&list, 777);
+
+    list_dump(&list);
+
     sort(&list);
 
     list_dump(&list);
