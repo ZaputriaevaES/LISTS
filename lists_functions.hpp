@@ -7,6 +7,10 @@ void list_ctor(struct lists * list);
 
 void list_completion(struct lists * list);
 
+int pop_free(struct lists * list);
+
+int push_free(struct lists * list, int index);
+
 void list_dump(struct lists * list);
 
 int push_front(struct lists * list, int value);
@@ -21,7 +25,9 @@ int get_nth(struct lists * list, int index);
 
 int insert(struct lists * list, int index, int value);
 
-int delete_nth(struct lists * list, int index, int * value);
+int excision(struct lists * list, int index, int * value);
+
+void list_realloc(struct lists * list); 
 
 int sort(struct lists * list);
 

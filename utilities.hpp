@@ -6,7 +6,11 @@
 #include <assert.h>
 #include <string.h> 
 
-#define MAX_LIST_SIZE 30
+#define DEBUG 1
+
+#define BASE_LIST_SIZE 30
+
+#define REALLOC_COEFF 2
 
 typedef int elem_t;
 
@@ -20,8 +24,8 @@ struct list_elem
 
 struct lists
     {
-        int head;
-        int tail;
+        //int head;
+        //int tail;
         int free;
         int size;
         int capacity;
